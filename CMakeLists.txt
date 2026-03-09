@@ -52,3 +52,15 @@ install(
         "${CMAKE_CURRENT_BINARY_DIR}/cputilsConfigVersion.cmake"
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/cputils
 )
+
+# Optional test build (off by default to keep the install workflow clean)
+option(CPUTILS_BUILD_TESTS "Build the cputils test suite" OFF)
+
+if(CPUTILS_BUILD_TESTS)
+    enable_testing()
+
+    add_executable(test_cputils tests/test_cputils.cpp)
+    target_link_libraries(test_cputils PRIVATE cputils)
+
+    add_test(NAME test_cputils COMMAND test_cputils)
+endif()
