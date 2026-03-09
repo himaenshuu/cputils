@@ -2,14 +2,16 @@ vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO himaenshuu/cputils
     REF "v${VERSION}"
-    SHA512 0  # Replace with: vcpkg hash <downloaded-tarball> after first release tag
+    SHA512 8612F3B5A271BE3C141E62E65CC774AD39384B352C5EA3295EA2D4A237D69825561E47DC7A787DC59FB2F4FA1FA8B40A1FC157FEC77EB73CB68A526F25A650A8
     HEAD_REF main
 )
-
 set(VCPKG_BUILD_TYPE release)
-vcpkg_cmake_configure(SOURCE_PATH "${SOURCE_PATH}")
+vcpkg_cmake_configure(
+    SOURCE_PATH "${SOURCE_PATH}"
+)
 vcpkg_cmake_install()
-vcpkg_fixup_cmake_targets(CONFIG_PATH lib/cmake/cputils)
-
+vcpkg_cmake_config_fixup(CONFIG_PATH lib/cmake/cputils)
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug")
-vcpkg_install_copyright(FILE_LIST "${SOURCE_PATH}/LICENSE")
+vcpkg_install_copyright(
+    FILE_LIST "${SOURCE_PATH}/LICENSE"
+)
