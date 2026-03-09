@@ -1,0 +1,8 @@
+{
+  "name": "cputils",
+  "version": "1.0.0",
+  "description": "A single-header C++ utility library for Competitive Programming and DSA.",
+  "homepage": "https://github.com/himaenshuu/cputils",
+  "license": "MIT",
+  "supports": "!uwp"
+}
