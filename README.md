@@ -1,11 +1,52 @@
-﻿# cputils
+﻿<div align="center">
 
-A lightweight, single-header C++17 utility library for **competitive programming** and **DSA**.
-No build step. No third-party dependencies. Just `#include` and go.
+# cputils
+
+**A fast, single-header C++17 toolkit for competitive programming and DSA.**
+
+No build step. No third-party dependencies. Download `cputils.h`, include it, and start solving.
+
+<p>
+  <a href="https://github.com/himaenshuu/cputils/releases/latest/download/cputils.h">
+    <img alt="Download cputils.h" src="https://img.shields.io/badge/Download-cputils.h-2563eb?style=for-the-badge&logo=cplusplus&logoColor=white">
+  </a>
+  <a href="https://github.com/himaenshuu/cputils/releases/latest">
+    <img alt="Latest release" src="https://img.shields.io/github/v/release/himaenshuu/cputils?style=for-the-badge&color=16a34a&label=Latest">
+  </a>
+  <a href="LICENSE">
+    <img alt="License" src="https://img.shields.io/badge/License-Apache--2.0-f97316?style=for-the-badge">
+  </a>
+</p>
+
+<p>
+  <a href="#-install-in-5-seconds">Install</a>
+  ·
+  <a href="#-action-shortcuts">Shortcuts</a>
+  ·
+  <a href="#-features">Features</a>
+  ·
+  <a href="#-examples">Examples</a>
+  ·
+  <a href="#-api-guide">API Guide</a>
+</p>
+
+</div>
 
 ---
 
-## Install in 5 Seconds
+## ⚡ Install in 5 Seconds
+
+<p>
+  <a href="https://github.com/himaenshuu/cputils/releases/latest/download/cputils.h">
+    <img alt="Direct download" src="https://img.shields.io/badge/Direct_Download-cputils.h-2563eb?style=flat-square&logo=github">
+  </a>
+  <a href="https://github.com/himaenshuu/cputils/releases/latest">
+    <img alt="Open latest release" src="https://img.shields.io/badge/Open-Latest_Release-16a34a?style=flat-square&logo=github">
+  </a>
+  <a href="templates/main.cpp">
+    <img alt="Starter template" src="https://img.shields.io/badge/Use-Starter_Template-7c3aed?style=flat-square&logo=cplusplus">
+  </a>
+</p>
 
 **Windows (PowerShell):**
 ```powershell
@@ -43,7 +84,19 @@ Start from [`templates/main.cpp`](templates/main.cpp) when you want a ready-to-c
 
 ---
 
-## What this repo provides
+## 🚀 Action Shortcuts
+
+| Action | Button | Command |
+|---|---|---|
+| Download latest header | <a href="https://github.com/himaenshuu/cputils/releases/latest/download/cputils.h"><img alt="Download" src="https://img.shields.io/badge/Download-cputils.h-2563eb?style=flat-square"></a> | `curl -fsSL https://github.com/himaenshuu/cputils/releases/latest/download/cputils.h -o cputils.h` |
+| Windows install | <a href="scripts/install.ps1"><img alt="PowerShell" src="https://img.shields.io/badge/Run-install.ps1-0284c7?style=flat-square&logo=powershell"></a> | `powershell -ExecutionPolicy Bypass -File .\scripts\install.ps1` |
+| Linux/macOS install | <a href="scripts/install.sh"><img alt="Shell" src="https://img.shields.io/badge/Run-install.sh-111827?style=flat-square&logo=gnubash"></a> | `sh scripts/install.sh` |
+| Start new solution | <a href="templates/main.cpp"><img alt="Template" src="https://img.shields.io/badge/Open-main.cpp-7c3aed?style=flat-square&logo=cplusplus"></a> | `cp templates/main.cpp main.cpp` |
+| View examples | <a href="examples"><img alt="Examples" src="https://img.shields.io/badge/Browse-examples-16a34a?style=flat-square"></a> | `ls examples` |
+
+---
+
+## 📦 What this repo provides
 
 This repository is intentionally small: the public API lives in [`include/cputils.h`](include/cputils.h), and the CMake/vcpkg files only package that header. After reviewing the original utilities, the most useful additions for CP users are helpers that remove repeated boilerplate in nearly every contest:
 
@@ -56,7 +109,7 @@ This repository is intentionally small: the public API lives in [`include/cputil
 
 ---
 
-## Features
+## ✨ Features
 
 | Category | Utility | What it does |
 |---|---|---|
@@ -92,7 +145,7 @@ This repository is intentionally small: the public API lives in [`include/cputil
 
 ---
 
-## Quick install (raw main)
+## 🧪 Quick install (raw main)
 
 **Linux / macOS:**
 ```bash
@@ -127,9 +180,9 @@ For stable installs, prefer the latest-release commands at the top of this READM
 
 ---
 
-## API guide and examples
+## 📘 API Guide
 
-### Examples
+### 🎯 Examples
 
 Ready-to-run examples live in [`examples/`](examples):
 
@@ -375,4 +428,4 @@ PRs welcome! Useful future additions could include:
 
 ---
 
-## Made with care
+## Made with love ❤️
