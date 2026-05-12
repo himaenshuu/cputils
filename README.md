@@ -16,9 +16,15 @@ No build step. No dependencies. Just `#include` and go.
 | `fastIO()` | `ios::sync_with_stdio(false); cin.tie(nullptr)` |
 | `dbg(x)` | Debug print `x` to stderr (disabled on online judges) |
 | `dbgv(v)` | Debug print a vector to stderr |
-| `gcd(a, b)` | GCD of two `long long` values |
-| `lcm(a, b)` | LCM of two `long long` values |
-| `ll`, `vi`, `vvi`, `pii` | Common typedefs |
+| `gcd(a, b)` | Non-negative GCD of two `long long` values |
+| `lcm(a, b)` | Non-negative LCM of two `long long` values; returns `0` when either input is `0` |
+| `modNormalize(value, mod)` | Normalize a value into `[0, mod)` |
+| `modPow(base, exponent, mod)` | Fast binary modular exponentiation |
+| `isPrime(n)` | Trial-division primality check |
+| `sieve(n)` | List primes up to `n` |
+| `prefixSum(v)` | Prefix sums for a `vector<long long>` with a leading `0` |
+| `chmin(x, y)`, `chmax(x, y)` | Update-and-report min/max helpers |
+| `ll`, `ull`, `vi`, `vll`, `vvi`, `pii` | Common typedefs |
 
 ---
 
@@ -49,6 +55,13 @@ int main() {
 
     ll a = 12, b = 18;
     cout << gcd(a, b);  // 6
+
+    cout << modPow(2, 10, 1000000007);  // 1024
+
+    auto primes = sieve(20);             // 2 3 5 7 11 13 17 19
+
+    vll nums = {1, 2, 3};
+    auto pref = prefixSum(nums);         // 0 1 3 6
 }
 ```
 
