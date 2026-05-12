@@ -1,4 +1,4 @@
-# cputils
+﻿# cputils
 
 A lightweight, single-header C++17 utility library for **competitive programming** and **DSA**.
 No build step. No third-party dependencies. Just `#include` and go.
@@ -27,29 +27,29 @@ This repository is intentionally small: the public API lives in [`include/cputil
 | I/O | `print2d(v, sep)` | Prints any `vector<vector<T>>`, one row per line |
 | I/O | `printPair(p)` | Prints a `pair<A, B>` as `(first, second)` |
 | I/O | `printPairs(v)` | Prints a `vector<pair<A, B>>`, one pair per line |
-| I/O | `readVector<T>(n)` | Reads and returns a vector of `n` values from `cin` |
-| Graphs | `readGraph(n, m, directed, oneIndexed)` | Reads an unweighted adjacency list from `m` edges |
+| I/O | `readVector<T>(n)` | Reads and returns a vector of `n` values from `cin`; rejects negative sizes |
+| Graphs | `readGraph(n, m, directed, oneIndexed)` | Reads an unweighted adjacency list from `m` valid edges |
 | Debug | `dbg(x)` | Prints `name = value` to `cerr` when `ONLINE_JUDGE` is not defined |
 | Debug | `dbgv(v)` | Prints vector contents to `cerr` when `ONLINE_JUDGE` is not defined |
 | Types | `ll`, `ull`, `pii`, `vi`, `vvi` | Common aliases for contest code |
 | Updates | `chmax(a, b)` | Assigns `a = b` when `b` is larger; returns whether it changed |
 | Updates | `chmin(a, b)` | Assigns `a = b` when `b` is smaller; returns whether it changed |
-| Math | `gcd(a, b)` | Non-negative greatest common divisor for `long long` values |
-| Math | `lcm(a, b)` | Non-negative least common multiple; returns `0` if either input is `0` |
-| Math | `floorDiv(a, b)` | Mathematical floor of integer division, including negative inputs |
-| Math | `ceilDiv(a, b)` | Mathematical ceiling of integer division, including negative inputs |
-| Mod math | `normalizeMod(a, mod)` | Converts `a` into the range `[0, mod)` |
+| Math | `gcd(a, b)` | Non-negative greatest common divisor for `long long` values, with overflow detection |
+| Math | `lcm(a, b)` | Non-negative least common multiple; returns `0` if either input is `0`; detects overflow |
+| Math | `floorDiv(a, b)` | Mathematical floor of integer division, including negative inputs; rejects invalid division |
+| Math | `ceilDiv(a, b)` | Mathematical ceiling of integer division, including negative inputs; rejects invalid division |
+| Mod math | `normalizeMod(a, mod)` | Converts `a` into the range `[0, mod)` for positive moduli |
 | Mod math | `modAdd(a, b, mod)` | Modular addition |
 | Mod math | `modSub(a, b, mod)` | Modular subtraction |
 | Mod math | `modMul(a, b, mod)` | Overflow-safe modular multiplication (`__int128` when available, fallback otherwise) |
-| Mod math | `modPow(base, exp, mod)` | Binary exponentiation under a modulus |
+| Mod math | `modPow(base, exp, mod)` | Binary exponentiation under a positive modulus and non-negative exponent |
 | Mod math | `extendedGcd(a, b, x, y)` | Extended Euclidean algorithm; fills Bezout coefficients |
 | Mod math | `modInverse(a, mod)` | Modular inverse, or `-1` when it does not exist |
 | Primes | `isPrime(n)` | Trial-division primality check |
 | Primes | `sieve(n)` | Returns all primes `<= n` |
 | Arrays | `prefixSums(v)` | Returns prefix sums with a leading zero: `pref[i+1] = sum(v[0..i])` |
-| DS | `DSU` | Disjoint Set Union with path compression and union by size |
-| DS | `Fenwick<T>` | Binary Indexed Tree for point updates and prefix/range sums |
+| DS | `DSU` | Disjoint Set Union with path compression, union by size, and bounds checks |
+| DS | `Fenwick<T>` | Binary Indexed Tree for checked point updates and prefix/range sums |
 
 ---
 
@@ -136,7 +136,7 @@ auto directed = readGraph(n, m, true);
 auto zeroIndexed = readGraph(n, m, false, false);
 ```
 
-`readGraph` returns `vector<vector<int>>`. By default, it expects common CP-style 1-indexed edge input and stores 0-indexed adjacency lists.
+`readGraph` returns `vector<vector<int>>`. By default, it expects common CP-style 1-indexed edge input and stores 0-indexed adjacency lists. Vertex ids outside the selected indexing mode throw `std::out_of_range`.
 
 ### Debug macros
 
@@ -173,7 +173,7 @@ std::cout << floorDiv(-7, 3); // -3
 std::cout << ceilDiv(-7, 3);  // -2
 ```
 
-`floorDiv` and `ceilDiv` implement mathematical floor/ceiling division instead of C++'s truncation toward zero. Pass a non-zero divisor.
+`floorDiv` and `ceilDiv` implement mathematical floor/ceiling division instead of C++'s truncation toward zero. They throw `std::invalid_argument` for division by zero and `std::overflow_error` for `LLONG_MIN / -1`.
 
 ### Modular arithmetic
 
@@ -187,7 +187,7 @@ ll bad = modInverse(2, 4);          // -1, inverse does not exist
 ll prod = modMul(1e18, 1e18, MOD);  // avoids long long multiplication overflow
 ```
 
-`modInverse(a, mod)` works when `gcd(a, mod) == 1`; it does not require `mod` to be prime.
+All modular helpers require `mod > 0`. `modPow` also requires `exp >= 0`. `modInverse(a, mod)` works when `gcd(a, mod) == 1`; it does not require `mod` to be prime.
 
 ### Prime helpers
 
@@ -233,6 +233,8 @@ Available methods:
 | `same(a, b)` | Returns whether two elements are in the same component |
 | `size(x)` | Returns the size of `x`'s component |
 
+DSU operations throw `std::out_of_range` when an index is outside `0..n-1`.
+
 ### Fenwick Tree / Binary Indexed Tree
 
 ```cpp
@@ -253,6 +255,18 @@ Available methods:
 | `add(index, delta)` | Adds `delta` to `index` |
 | `sumPrefix(index)` | Returns the sum on `[0, index]` |
 | `rangeSum(left, right)` | Returns the sum on `[left, right]`; returns zero for an empty range |
+
+Fenwick operations throw `std::out_of_range` for invalid indices or ranges. `sumPrefix(-1)` returns zero, which is useful when computing ranges.
+
+### Error handling
+
+The library validates inputs that would otherwise cause undefined behavior, infinite loops, or out-of-bounds access. It uses standard exceptions from `<stdexcept>`:
+
+| Exception | Used for |
+|---|---|
+| `std::invalid_argument` | Negative sizes, non-positive modulus, division by zero, or negative modular exponent |
+| `std::out_of_range` | Invalid graph, DSU, or Fenwick indices |
+| `std::overflow_error` | Results that cannot fit in `long long` |
 
 ---
 
@@ -278,7 +292,7 @@ include(FetchContent)
 FetchContent_Declare(
     cputils
     GIT_REPOSITORY https://github.com/himaenshuu/cputils.git
-    GIT_TAG        v1.0.0
+    GIT_TAG        v1.0.1
 )
 FetchContent_MakeAvailable(cputils)
 target_link_libraries(your_target PRIVATE cputils)
@@ -308,4 +322,4 @@ PRs welcome! Useful future additions could include:
 
 ---
 
-## Made with love ❤️
+## Made with care

@@ -1,21 +1,39 @@
 #include "cputils.h"
 #include <cassert>
+#include <limits>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 int main() {
     assert(gcd(12, 8) == 4);
     assert(gcd(-12, 8) == 4);
     assert(gcd(0, 5) == 5);
+    assert(gcd(std::numeric_limits<ll>::min(), 2) == 2);
     assert(lcm(4, 6) == 12);
     assert(lcm(-4, 6) == 12);
     assert(lcm(0, 6) == 0);
     assert(lcm(7, 1) == 7);
+    try {
+        (void)gcd(std::numeric_limits<ll>::min(), 0);
+        assert(false);
+    } catch (const std::overflow_error&) {
+    }
+    try {
+        (void)lcm(std::numeric_limits<ll>::max(), 2);
+        assert(false);
+    } catch (const std::overflow_error&) {
+    }
 
     assert(floorDiv(7, 3) == 2);
     assert(floorDiv(-7, 3) == -3);
     assert(ceilDiv(7, 3) == 3);
     assert(ceilDiv(-7, 3) == -2);
+    try {
+        (void)floorDiv(1, 0);
+        assert(false);
+    } catch (const std::invalid_argument&) {
+    }
 
     assert(normalizeMod(-1, 5) == 4);
     assert(modAdd(4, 3, 5) == 2);
@@ -24,6 +42,16 @@ int main() {
     assert(modPow(2, 10, 1000000007LL) == 1024);
     assert(modInverse(3, 11) == 4);
     assert(modInverse(2, 4) == -1);
+    try {
+        (void)normalizeMod(1, 0);
+        assert(false);
+    } catch (const std::invalid_argument&) {
+    }
+    try {
+        (void)modPow(2, -1, 5);
+        assert(false);
+    } catch (const std::invalid_argument&) {
+    }
 
     assert(isPrime(2));
     assert(isPrime(97));
@@ -76,12 +104,48 @@ int main() {
     auto read = readVector<int>(3);
     std::cin.rdbuf(oldCin);
     assert((read == std::vector<int>{10, 20, 30}));
+    try {
+        (void)readVector<int>(-1);
+        assert(false);
+    } catch (const std::invalid_argument&) {
+    }
 
     std::istringstream graphInput("1 2 2 3 1 3");
     oldCin = std::cin.rdbuf(graphInput.rdbuf());
     auto graph = readGraph(3, 3);
     std::cin.rdbuf(oldCin);
     assert((graph == std::vector<std::vector<int>>{{1, 2}, {0, 2}, {1, 0}}));
+    try {
+        std::istringstream badGraphInput("1 4");
+        oldCin = std::cin.rdbuf(badGraphInput.rdbuf());
+        (void)readGraph(3, 1);
+        std::cin.rdbuf(oldCin);
+        assert(false);
+    } catch (const std::out_of_range&) {
+        std::cin.rdbuf(oldCin);
+    }
+
+    try {
+        dsu.find(-1);
+        assert(false);
+    } catch (const std::out_of_range&) {
+    }
+
+    try {
+        fw.add(-1, 1);
+        assert(false);
+    } catch (const std::out_of_range&) {
+    }
+    try {
+        (void)fw.sumPrefix(5);
+        assert(false);
+    } catch (const std::out_of_range&) {
+    }
+    try {
+        (void)fw.rangeSum(-1, 1);
+        assert(false);
+    } catch (const std::out_of_range&) {
+    }
 
     fastIO();
 

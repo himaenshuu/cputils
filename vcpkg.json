@@ -1,8 +1,8 @@
 {
   "name": "cputils",
   "maintainers": ["Himanshu Raj"],
-  "version": "1.0.0",
-  "description": "A single-header C++ utility library for Competitive Programming and DSA — print helpers, fast I/O, debug macros, and math utilities.",
+  "version": "1.0.1",
+  "description": "A single-header C++ utility library for Competitive Programming and DSA - print helpers, fast I/O, debug macros, and math utilities.",
   "homepage": "https://github.com/himaenshuu/cputils",
   "license": "MIT",
   "supports": "!uwp"
