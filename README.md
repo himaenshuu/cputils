@@ -1,28 +1,59 @@
 # cputils
 
-A lightweight, single-header C++ utility library for **Programming** and **DSA**.  
-No build step. No dependencies. Just `#include` and go.
+A lightweight, single-header C++17 utility library for **competitive programming** and **DSA**.
+No build step. No third-party dependencies. Just `#include` and go.
+
+---
+
+## What this repo provides
+
+This repository is intentionally small: the public API lives in [`include/cputils.h`](include/cputils.h), and the CMake/vcpkg files only package that header. After reviewing the original utilities, the most useful additions for CP users are helpers that remove repeated boilerplate in nearly every contest:
+
+- numeric helpers for `gcd`, `lcm`, division, and modular arithmetic;
+- prime helpers for quick primality checks and sieve generation;
+- common state-update helpers like `chmax` / `chmin`;
+- prefix sums for range-sum setup;
+- graph input, DSU, and Fenwick Tree implementations;
+- input/output and debug helpers for fast local testing.
 
 ---
 
 ## Features
 
-| Utility | What it does |
-|---|---|
-| `print1d(v)` | Print a 1D `vector<int>` |
-| `print2d(v)` | Print a 2D `vector<vector<int>>` |
-| `printPair(p)` | Print a `pair<A,B>` |
-| `printPairs(v)` | Print a `vector<pair<A,B>>` |
-| `fastIO()` | `ios::sync_with_stdio(false); cin.tie(nullptr)` |
-| `dbg(x)` | Debug print `x` to stderr (disabled on online judges) |
-| `dbgv(v)` | Debug print a vector to stderr |
-| `gcd(a, b)` | GCD of two `long long` values |
-| `lcm(a, b)` | LCM of two `long long` values |
-| `ll`, `vi`, `vvi`, `pii` | Common typedefs |
+| Category | Utility | What it does |
+|---|---|---|
+| I/O | `fastIO()` | Disables sync with C stdio and unties `cin` from `cout` |
+| I/O | `print1d(v, sep, end)` | Prints any `vector<T>` with configurable separator/end characters |
+| I/O | `print2d(v, sep)` | Prints any `vector<vector<T>>`, one row per line |
+| I/O | `printPair(p)` | Prints a `pair<A, B>` as `(first, second)` |
+| I/O | `printPairs(v)` | Prints a `vector<pair<A, B>>`, one pair per line |
+| I/O | `readVector<T>(n)` | Reads and returns a vector of `n` values from `cin` |
+| Graphs | `readGraph(n, m, directed, oneIndexed)` | Reads an unweighted adjacency list from `m` edges |
+| Debug | `dbg(x)` | Prints `name = value` to `cerr` when `ONLINE_JUDGE` is not defined |
+| Debug | `dbgv(v)` | Prints vector contents to `cerr` when `ONLINE_JUDGE` is not defined |
+| Types | `ll`, `ull`, `pii`, `vi`, `vvi` | Common aliases for contest code |
+| Updates | `chmax(a, b)` | Assigns `a = b` when `b` is larger; returns whether it changed |
+| Updates | `chmin(a, b)` | Assigns `a = b` when `b` is smaller; returns whether it changed |
+| Math | `gcd(a, b)` | Non-negative greatest common divisor for `long long` values |
+| Math | `lcm(a, b)` | Non-negative least common multiple; returns `0` if either input is `0` |
+| Math | `floorDiv(a, b)` | Mathematical floor of integer division, including negative inputs |
+| Math | `ceilDiv(a, b)` | Mathematical ceiling of integer division, including negative inputs |
+| Mod math | `normalizeMod(a, mod)` | Converts `a` into the range `[0, mod)` |
+| Mod math | `modAdd(a, b, mod)` | Modular addition |
+| Mod math | `modSub(a, b, mod)` | Modular subtraction |
+| Mod math | `modMul(a, b, mod)` | Overflow-safe modular multiplication (`__int128` when available, fallback otherwise) |
+| Mod math | `modPow(base, exp, mod)` | Binary exponentiation under a modulus |
+| Mod math | `extendedGcd(a, b, x, y)` | Extended Euclidean algorithm; fills Bezout coefficients |
+| Mod math | `modInverse(a, mod)` | Modular inverse, or `-1` when it does not exist |
+| Primes | `isPrime(n)` | Trial-division primality check |
+| Primes | `sieve(n)` | Returns all primes `<= n` |
+| Arrays | `prefixSums(v)` | Returns prefix sums with a leading zero: `pref[i+1] = sum(v[0..i])` |
+| DS | `DSU` | Disjoint Set Union with path compression and union by size |
+| DS | `Fenwick<T>` | Binary Indexed Tree for point updates and prefix/range sums |
 
 ---
 
-## Quick Install (recommended for CP)
+## Quick install (recommended for CP)
 
 **Linux / macOS:**
 ```bash
@@ -34,7 +65,7 @@ curl -O https://raw.githubusercontent.com/himaenshuu/cputils/main/include/cputil
 Invoke-WebRequest -UseBasicParsing -Uri "https://raw.githubusercontent.com/himaenshuu/cputils/main/include/cputils.h" -OutFile "cputils.h"
 ```
 
-> Note: On Windows, `wget` and `curl` are aliases for `Invoke-WebRequest` and won't save the file without `-OutFile`. Use the command above instead.
+> Note: On Windows, `wget` and `curl` are often aliases for `Invoke-WebRequest` and may not save the file without `-OutFile`. Use the command above if you are in PowerShell.
 
 Then in your solution:
 ```cpp
@@ -42,15 +73,186 @@ Then in your solution:
 
 int main() {
     fastIO();
-    vector<int> v = {1, 2, 3, 4};
-    print1d(v);         // 1 2 3 4
 
-    dbg(v.size());      // v.size() = 4  (only in local builds)
+    vi v = {1, 2, 3, 4};
+    print1d(v);              // 1 2 3 4
+
+    dbg(v.size());           // v.size() = 4  (only in local builds)
 
     ll a = 12, b = 18;
-    cout << gcd(a, b);  // 6
+    std::cout << gcd(a, b);  // 6
 }
 ```
+
+---
+
+## API guide and examples
+
+### Fast I/O
+
+```cpp
+int main() {
+    fastIO();
+    int n;
+    std::cin >> n;
+}
+```
+
+Call `fastIO()` once at the start of `main()` for typical contest input.
+
+### Printing helpers
+
+```cpp
+vi a = {1, 2, 3};
+vvi grid = {{1, 2}, {3, 4}};
+pii edge = {2, 5};
+
+print1d(a);                 // 1 2 3
+print1d(a, ',');            // 1,2,3
+print2d(grid);              // 1 2\n3 4
+printPair(edge);            // (2, 5)
+printPairs(vector<pii>{{1, 2}, {3, 4}});
+```
+
+`print1d` and `print2d` are templates, so they work with any printable element type.
+
+### Reading a vector
+
+```cpp
+int n;
+std::cin >> n;
+auto a = readVector<ll>(n);
+```
+
+This is useful for the common pattern of reading `n` followed by an array.
+
+### Reading a graph
+
+```cpp
+int n, m;
+std::cin >> n >> m;
+auto graph = readGraph(n, m);        // undirected, 1-indexed input converted to 0-indexed
+auto directed = readGraph(n, m, true);
+auto zeroIndexed = readGraph(n, m, false, false);
+```
+
+`readGraph` returns `vector<vector<int>>`. By default, it expects common CP-style 1-indexed edge input and stores 0-indexed adjacency lists.
+
+### Debug macros
+
+```cpp
+int answer = 42;
+vi a = {1, 2, 3};
+
+dbg(answer);  // answer = 42
+dbgv(a);      // a = [ 1 2 3 ]
+```
+
+`dbg` and `dbgv` compile to no-ops when `ONLINE_JUDGE` is defined.
+
+### State-update helpers
+
+```cpp
+int best = -1;
+if (chmax(best, score)) {
+    // best changed
+}
+
+int low = 1e9;
+chmin(low, candidate);
+```
+
+These helpers reduce noise in DP, greedy, and graph solutions.
+
+### GCD, LCM, and signed division
+
+```cpp
+std::cout << gcd(-12, 8);     // 4
+std::cout << lcm(-4, 6);      // 12
+std::cout << floorDiv(-7, 3); // -3
+std::cout << ceilDiv(-7, 3);  // -2
+```
+
+`floorDiv` and `ceilDiv` implement mathematical floor/ceiling division instead of C++'s truncation toward zero. Pass a non-zero divisor.
+
+### Modular arithmetic
+
+```cpp
+const ll MOD = 1'000'000'007;
+
+ll x = normalizeMod(-3, MOD);       // MOD - 3
+ll y = modPow(2, 10, MOD);          // 1024
+ll inv = modInverse(3, 11);         // 4, because 3 * 4 = 1 mod 11
+ll bad = modInverse(2, 4);          // -1, inverse does not exist
+ll prod = modMul(1e18, 1e18, MOD);  // avoids long long multiplication overflow
+```
+
+`modInverse(a, mod)` works when `gcd(a, mod) == 1`; it does not require `mod` to be prime.
+
+### Prime helpers
+
+```cpp
+if (isPrime(n)) {
+    // n is prime
+}
+
+auto primes = sieve(100); // 2, 3, 5, ..., 97
+```
+
+`isPrime` uses trial division and is best for occasional checks. Use `sieve(n)` when you need all primes up to `n`.
+
+### Prefix sums
+
+```cpp
+vector<ll> a = {2, 4, 6};
+auto pref = prefixSums(a); // {0, 2, 6, 12}
+
+// sum on inclusive range [l, r]
+ll range = pref[r + 1] - pref[l];
+```
+
+### Disjoint Set Union (DSU)
+
+```cpp
+DSU dsu(n);
+dsu.unite(0, 1);
+
+if (dsu.same(0, 1)) {
+    std::cout << dsu.size(0);
+}
+```
+
+Available methods:
+
+| Method | Description |
+|---|---|
+| `DSU(n)` | Creates `n` singleton sets indexed `0..n-1` |
+| `init(n)` | Resets the DSU to `n` singleton sets |
+| `find(x)` | Returns the representative of `x` |
+| `unite(a, b)` | Merges components and returns whether a merge happened |
+| `same(a, b)` | Returns whether two elements are in the same component |
+| `size(x)` | Returns the size of `x`'s component |
+
+### Fenwick Tree / Binary Indexed Tree
+
+```cpp
+Fenwick<ll> fw(n);
+fw.add(0, 5);
+fw.add(3, 2);
+
+ll prefix = fw.sumPrefix(3); // sum on [0, 3]
+ll range = fw.rangeSum(1, 3); // sum on [1, 3]
+```
+
+Available methods:
+
+| Method | Description |
+|---|---|
+| `Fenwick<T>(n)` | Creates a tree of size `n`, indexed externally as `0..n-1` |
+| `init(n)` | Resets the tree to size `n` with zero values |
+| `add(index, delta)` | Adds `delta` to `index` |
+| `sumPrefix(index)` | Returns the sum on `[0, index]` |
+| `rangeSum(left, right)` | Returns the sum on `[left, right]`; returns zero for an empty range |
 
 ---
 
@@ -84,12 +286,25 @@ target_link_libraries(your_target PRIVATE cputils)
 
 ---
 
+## Testing locally
+
+```bash
+cmake -S . -B build -DCPUTILS_BUILD_TESTS=ON
+cmake --build build
+ctest --test-dir build --output-on-failure
+```
+
+---
+
 ## Contributing
 
-PRs welcome! Planned additions:
-- String helpers
-- Graph input readers
-- Segment tree / BIT templates
+PRs welcome! Useful future additions could include:
+
+- shortest path templates;
+- segment tree and lazy segment tree templates;
+- rolling hash helpers for strings;
+- coordinate compression helpers;
+- combinatorics helpers for factorials, inverse factorials, and `nCr` modulo a prime.
 
 ---
 
