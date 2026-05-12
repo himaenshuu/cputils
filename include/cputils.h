@@ -16,6 +16,8 @@ using pii = std::pair<int, int>;
 using vi = std::vector<int>;
 using vvi = std::vector<std::vector<int>>;
 
+inline constexpr const char* CPUTILS_VERSION = "1.1.0";
+
 namespace cputils_detail {
 inline ull magnitude(ll value) {
     if (value >= 0) return static_cast<ull>(value);

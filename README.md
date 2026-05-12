@@ -5,6 +5,44 @@ No build step. No third-party dependencies. Just `#include` and go.
 
 ---
 
+## Install in 5 Seconds
+
+**Windows (PowerShell):**
+```powershell
+Invoke-WebRequest -UseBasicParsing -Uri "https://github.com/himaenshuu/cputils/releases/latest/download/cputils.h" -OutFile "cputils.h"
+```
+
+**Linux / macOS:**
+```bash
+curl -fsSL https://github.com/himaenshuu/cputils/releases/latest/download/cputils.h -o cputils.h
+```
+
+**Script installer:**
+```powershell
+.\scripts\install.ps1
+```
+
+```bash
+sh scripts/install.sh
+```
+
+Both scripts download the latest release asset and overwrite `cputils.h` in the target path.
+
+Then in your solution:
+```cpp
+#include "cputils.h"
+
+int main() {
+    fastIO();
+
+    return 0;
+}
+```
+
+Start from [`templates/main.cpp`](templates/main.cpp) when you want a ready-to-copy contest file.
+
+---
+
 ## What this repo provides
 
 This repository is intentionally small: the public API lives in [`include/cputils.h`](include/cputils.h), and the CMake/vcpkg files only package that header. After reviewing the original utilities, the most useful additions for CP users are helpers that remove repeated boilerplate in nearly every contest:
@@ -32,6 +70,7 @@ This repository is intentionally small: the public API lives in [`include/cputil
 | Debug | `dbg(x)` | Prints `name = value` to `cerr` when `ONLINE_JUDGE` is not defined |
 | Debug | `dbgv(v)` | Prints vector contents to `cerr` when `ONLINE_JUDGE` is not defined |
 | Types | `ll`, `ull`, `pii`, `vi`, `vvi` | Common aliases for contest code |
+| Version | `CPUTILS_VERSION` | Header version string for local verification |
 | Updates | `chmax(a, b)` | Assigns `a = b` when `b` is larger; returns whether it changed |
 | Updates | `chmin(a, b)` | Assigns `a = b` when `b` is smaller; returns whether it changed |
 | Math | `gcd(a, b)` | Non-negative greatest common divisor for `long long` values, with overflow detection |
@@ -53,11 +92,11 @@ This repository is intentionally small: the public API lives in [`include/cputil
 
 ---
 
-## Quick install (recommended for CP)
+## Quick install (raw main)
 
 **Linux / macOS:**
 ```bash
-curl -O https://raw.githubusercontent.com/himaenshuu/cputils/main/include/cputils.h
+curl -fsSL https://raw.githubusercontent.com/himaenshuu/cputils/main/include/cputils.h -o cputils.h
 ```
 
 **Windows (PowerShell):**
@@ -84,9 +123,23 @@ int main() {
 }
 ```
 
+For stable installs, prefer the latest-release commands at the top of this README.
+
 ---
 
 ## API guide and examples
+
+### Examples
+
+Ready-to-run examples live in [`examples/`](examples):
+
+| File | Focus |
+|---|---|
+| [`basic.cpp`](examples/basic.cpp) | Include setup, printing, and math helpers |
+| [`graph.cpp`](examples/graph.cpp) | Reading an adjacency list |
+| [`dsu.cpp`](examples/dsu.cpp) | Disjoint Set Union usage |
+| [`fenwick.cpp`](examples/fenwick.cpp) | Point updates and range sums |
+| [`mod_math.cpp`](examples/mod_math.cpp) | Modular arithmetic helpers |
 
 ### Fast I/O
 
@@ -292,7 +345,7 @@ include(FetchContent)
 FetchContent_Declare(
     cputils
     GIT_REPOSITORY https://github.com/himaenshuu/cputils.git
-    GIT_TAG        v1.0.1
+    GIT_TAG        v1.1.0
 )
 FetchContent_MakeAvailable(cputils)
 target_link_libraries(your_target PRIVATE cputils)

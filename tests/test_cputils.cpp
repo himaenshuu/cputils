@@ -4,8 +4,11 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <string>
 
 int main() {
+    assert(std::string(CPUTILS_VERSION) == "1.1.0");
+
     assert(gcd(12, 8) == 4);
     assert(gcd(-12, 8) == 4);
     assert(gcd(0, 5) == 5);
